@@ -2,9 +2,7 @@ package co.neweden.menugui;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.logging.Level;
 
 public class Main extends JavaPlugin {
@@ -15,9 +13,10 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         MenuGUI.plugin = this;
         saveDefaultConfig();
-        if (!getConfig().getBoolean("apiOnlyMode", false))
+        if (!getConfig().getBoolean("apiOnlyMode", false)) {
             loadDBConnection();
-        else
+            loadDBMenus();
+        } else
             getLogger().log(Level.INFO, "Based on the config option apiOnlyMode the plugin will run in API only mode.");
     }
 
@@ -40,6 +39,27 @@ public class Main extends JavaPlugin {
         }
         getLogger().log(Level.INFO, "Connected to MySQL Database");
         return true;
+    }
+
+    private void loadDBMenus() {
+        getLogger().log(Level.INFO, "Preparing to initialize menus from database.");
+        ResultSet rs;
+        try {
+            Statement st = db.createStatement();
+            rs = st.executeQuery("SELECT * FROM menus;");
+            while (rs.next()) {
+                if (!rs.getBoolean("enabled")) continue;
+                Menu menu = MenuGUI.newMenu(rs.getString("name"));
+                menu.setTitle(rs.getString("title"));
+                menu.setOpenCommand(rs.getString("command"));
+                getLogger().log(Level.INFO, "Menu " + menu.getName() + " initialized");
+            }
+        } catch (SQLException e) {
+            getLogger().log(Level.SEVERE, "SQLException occurred while trying to get data from menus table of database.", e);
+        }
+        if (MenuGUI.getMenus().size() == 0) {
+            getLogger().log(Level.INFO, "No menus initialized from databases, other plugins that use this API may now initialize their onw menus.");
+        }
     }
 
 }
