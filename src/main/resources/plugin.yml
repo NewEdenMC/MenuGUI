@@ -1,0 +1,6 @@
+name: MenuGUI
+description: Provides graphical menu systems using inventories
+main: co.neweden.menugui.Main
+version: 0.1
+author: AaronMcH
+website: https://neweden.co/

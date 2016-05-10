@@ -1,8 +1,8 @@
 package co.neweden.menugui;
 
-import net.md_5.bungee.api.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends Plugin {
+public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
