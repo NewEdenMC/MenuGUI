@@ -18,4 +18,6 @@ public class MenuGUI {
         return menu;
     }
 
+    public static Main getPlugin() { return plugin; }
+
 }
