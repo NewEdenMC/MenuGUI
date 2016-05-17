@@ -26,6 +26,9 @@ public class SlotFrame {
     public SlotFrame addHoverText(String text) { hoverText.add(text); return this; }
     public SlotFrame addHoverText(List<String> text) { hoverText.addAll(text); return this; }
 
+    protected Boolean clearHover = false;
+    public SlotFrame clearHoverText() { clearHover = true; return this; }
+
     protected Boolean repeate = false;
     public SlotFrame repeate() { repeate = true; return this; }
 

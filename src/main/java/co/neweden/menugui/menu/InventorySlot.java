@@ -62,7 +62,7 @@ public class InventorySlot extends SlotFrame implements Listener {
             if (frame.displayName != null) meta.setDisplayName(Util.formatString("&r" + frame.displayName));
             if (frame.hoverText.size() > 0) {
                 List<String> lore = new ArrayList<>();
-                if (meta.getLore() != null) lore.addAll(item.getItemMeta().getLore());
+                if (!frame.clearHover && meta.getLore() != null) lore.addAll(meta.getLore());
                 for (String text : frame.hoverText) {
                     text = Util.addLineBreaks(text, ChatPaginator.AVERAGE_CHAT_PAGE_WIDTH / 2);
                     String[] split = text.split("\n");

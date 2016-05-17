@@ -5,7 +5,6 @@ import co.neweden.menugui.menu.InventorySlot;
 import co.neweden.menugui.menu.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -65,7 +64,7 @@ public class Menu {
         getSlot(1).enableEnchantEffect(true);
         getSlot(1).atTick(20).setMaterial(Material.STONE);
         getSlot(1).atTick(40).setMaterial(Material.GRASS).enableEnchantEffect(false);
-        getSlot(1).atTick(60).setMaterial(Material.WOOD).addHoverText("This item is a Minecraft item, it can be used for things, but right now we use it for stuff in this menu.");
+        getSlot(1).atTick(60).setMaterial(Material.WOOD).clearHoverText().addHoverText("This item is a Minecraft item, it can be used for things, but right now we use it for stuff in this menu.");
         getSlot(1).atTick(80).repeate();
         /* End demo testing code */
         for (Map.Entry<Integer, InventorySlot> slot : slots.entrySet()) {
