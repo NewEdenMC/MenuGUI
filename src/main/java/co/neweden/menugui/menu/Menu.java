@@ -1,14 +1,12 @@
-package co.neweden.menugui;
+package co.neweden.menugui.menu;
 
-import co.neweden.menugui.menu.Command;
-import co.neweden.menugui.menu.InventorySlot;
-import co.neweden.menugui.menu.Logger;
+import co.neweden.menugui.Main;
+import co.neweden.menugui.menu.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Menu {
@@ -19,7 +17,6 @@ public class Menu {
     private String openCommand;
     private Command command;
     private Logger logger;
-    private HashMap<Integer, InventorySlot> slots = new HashMap<>();
     private Integer rows = 1;
 
     public Menu(Main plugin, String name) {
@@ -47,27 +44,20 @@ public class Menu {
         this.command.register();
     }
 
-    public InventorySlot getSlot(Integer slot) {
-        if (slots.containsKey(slot))
-            return slots.get(slot);
-        else {
-            InventorySlot invSlot = new InventorySlot(this, slot);
-            slots.put(slot, invSlot);
-            return invSlot;
-        }
-    }
-
     public void openMenu(Player player) {
         Inventory inv = Bukkit.createInventory(player, rows * 9, getTitle());
+        MenuInstance instance = new MenuInstance(this, inv);
+        MenuPopulateEvent event = new MenuPopulateEvent(instance);
+        Bukkit.getPluginManager().callEvent(event);
         /* Demo testing code */
-        getSlot(1).setMaterial(Material.DIRT).setDisplayName("Ima door!").addHoverText("Yep!");
-        getSlot(1).enableEnchantEffect(true);
-        getSlot(1).atTick(20).setMaterial(Material.STONE);
-        getSlot(1).atTick(40).setMaterial(Material.GRASS).enableEnchantEffect(false);
-        getSlot(1).atTick(60).setMaterial(Material.WOOD).clearHoverText().addHoverText("This item is a Minecraft item, it can be used for things, but right now we use it for stuff in this menu.");
-        getSlot(1).atTick(80).repeate();
+        instance.getSlot(1).setMaterial(Material.DIRT).setDisplayName("Ima door!").addHoverText("Yep!");
+        instance.getSlot(1).enableEnchantEffect(true);
+        instance.getSlot(1).atTick(20).setMaterial(Material.STONE);
+        instance.getSlot(1).atTick(40).setMaterial(Material.GRASS).enableEnchantEffect(false);
+        instance.getSlot(1).atTick(60).setMaterial(Material.WOOD).clearHoverText().addHoverText("This item is a Minecraft item, it can be used for things, but right now we use it for stuff in this menu.");
+        instance.getSlot(1).atTick(80).repeate();
         /* End demo testing code */
-        for (Map.Entry<Integer, InventorySlot> slot : slots.entrySet()) {
+        for (Map.Entry<Integer, InventorySlot> slot : instance.slots.entrySet()) {
             slot.getValue().run(player, inv);
         }
         player.openInventory(inv);

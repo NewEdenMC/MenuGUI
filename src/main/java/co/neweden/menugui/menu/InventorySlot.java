@@ -1,6 +1,5 @@
 package co.neweden.menugui.menu;
 
-import co.neweden.menugui.Menu;
 import co.neweden.menugui.MenuGUI;
 import co.neweden.menugui.Util;
 import org.bukkit.Bukkit;
@@ -24,12 +23,12 @@ import java.util.logging.Level;
 
 public class InventorySlot extends SlotFrame implements Listener {
 
-    private Menu menu;
+    private MenuInstance menu;
     private Integer slot;
     private TreeMap<Integer, SlotFrame> keys = new TreeMap<>();
     private HashMap<Player, BukkitTask> tasks = new HashMap<>();
 
-    public InventorySlot(Menu menu, Integer slot) {
+    public InventorySlot(MenuInstance menu, Integer slot) {
         this.menu = menu;
         this.slot = slot;
         keys.put(0, this);
@@ -46,7 +45,7 @@ public class InventorySlot extends SlotFrame implements Listener {
         }
     }
 
-    private void updateSlot(Inventory inv, Integer slot, Integer tick, SlotFrame frame, ItemStack item) {
+    private void updateSlot(Integer tick, SlotFrame frame, ItemStack item) {
         try {
             if (tick == 0) item.setType(Material.AIR); // Reset ItemStack if we are at the start of the animation
             if (frame.material != null) item.setType(frame.material);
@@ -74,16 +73,16 @@ public class InventorySlot extends SlotFrame implements Listener {
             }
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             item.setItemMeta(meta);
-            inv.setItem(slot, item);
+            menu.inv.setItem(slot, item);
         } catch (Throwable e) {
-            menu.getLogger().log(Level.SEVERE, String.format("Exception occurred while updating slot %s at frame %s.", slot, tick), e);
+            menu.getMenu().getLogger().log(Level.SEVERE, String.format("Exception occurred while updating slot %s at frame %s.", slot, tick), e);
         }
     }
 
     public void run(Player player, final Inventory inv) {
         final ItemStack item = new ItemStack(Material.AIR);
         if (keys.size() == 1) {
-            updateSlot(inv, slot, 0, keys.get(0), item);
+            updateSlot(0, keys.get(0), item);
             return;
         }
         BukkitTask task = new BukkitRunnable() {
@@ -91,7 +90,7 @@ public class InventorySlot extends SlotFrame implements Listener {
             @Override
             public void run() {
                 if (keys.get(counter) != null) {
-                    updateSlot(inv, slot, counter, keys.get(counter), item);
+                    updateSlot(counter, keys.get(counter), item);
                     if (keys.get(counter).repeate) { counter = 0; return; }
                 }
                 counter++;

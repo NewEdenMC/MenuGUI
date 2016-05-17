@@ -1,5 +1,7 @@
 package co.neweden.menugui;
 
+import co.neweden.menugui.menu.Menu;
+
 import java.util.HashSet;
 import java.util.Set;
 

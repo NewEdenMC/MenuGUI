@@ -1,6 +1,5 @@
 package co.neweden.menugui.menu;
 
-import co.neweden.menugui.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;

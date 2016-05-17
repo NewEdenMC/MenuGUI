@@ -1,5 +1,6 @@
 package co.neweden.menugui;
 
+import co.neweden.menugui.menu.Menu;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.*;

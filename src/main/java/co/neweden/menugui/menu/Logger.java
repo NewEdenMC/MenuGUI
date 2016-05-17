@@ -1,6 +1,5 @@
 package co.neweden.menugui.menu;
 
-import co.neweden.menugui.Menu;
 import org.bukkit.plugin.PluginLogger;
 
 import java.util.logging.LogRecord;
