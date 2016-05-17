@@ -2,6 +2,7 @@ package co.neweden.menugui.menu;
 
 import co.neweden.menugui.Menu;
 import co.neweden.menugui.MenuGUI;
+import co.neweden.menugui.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -16,11 +17,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.ChatPaginator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.logging.Level;
 
 public class InventorySlot extends SlotFrame implements Listener {
@@ -60,11 +59,17 @@ public class InventorySlot extends SlotFrame implements Listener {
                     item.removeEnchantment(Enchantment.LUCK);
             }
             ItemMeta meta = item.getItemMeta();
-            if (frame.displayName != null) meta.setDisplayName(frame.displayName);
+            if (frame.displayName != null) meta.setDisplayName(Util.formatString("&r" + frame.displayName));
             if (frame.hoverText.size() > 0) {
                 List<String> lore = new ArrayList<>();
                 if (meta.getLore() != null) lore.addAll(item.getItemMeta().getLore());
-                lore.addAll(frame.hoverText);
+                for (String text : frame.hoverText) {
+                    text = Util.addLineBreaks(text, ChatPaginator.AVERAGE_CHAT_PAGE_WIDTH / 2);
+                    String[] split = text.split("\n");
+                    for (int i = 0; i < split.length; i++) {
+                        lore.add(Util.formatString("&r" + split[i]));
+                    }
+                }
                 meta.setLore(lore);
             }
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
