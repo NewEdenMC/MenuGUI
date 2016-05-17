@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -26,7 +27,8 @@ public class InventorySlot extends SlotFrame implements Listener {
     private MenuInstance menu;
     private Integer slot;
     private TreeMap<Integer, SlotFrame> keys = new TreeMap<>();
-    private HashMap<Player, BukkitTask> tasks = new HashMap<>();
+    private BukkitTask task;
+    private String clickCommand;
 
     public InventorySlot(MenuInstance menu, Integer slot) {
         this.menu = menu;
@@ -73,6 +75,7 @@ public class InventorySlot extends SlotFrame implements Listener {
             }
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             item.setItemMeta(meta);
+            if (frame.command != null) clickCommand = frame.command;
             menu.inv.setItem(slot, item);
         } catch (Throwable e) {
             menu.getMenu().getLogger().log(Level.SEVERE, String.format("Exception occurred while updating slot %s at frame %s.", slot, tick), e);
@@ -85,7 +88,7 @@ public class InventorySlot extends SlotFrame implements Listener {
             updateSlot(0, keys.get(0), item);
             return;
         }
-        BukkitTask task = new BukkitRunnable() {
+        task = new BukkitRunnable() {
             Integer counter = 0;
             @Override
             public void run() {
@@ -96,17 +99,36 @@ public class InventorySlot extends SlotFrame implements Listener {
                 counter++;
             }
         }.runTaskTimer(MenuGUI.getPlugin(), 0L, 1L);
-        tasks.put(player, task);
     }
+
+    HashMap<Player, String> commandQueue = new HashMap<>();
 
     @EventHandler (priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
-        Player player = (Player) event.getPlayer();
-        if (tasks.containsKey(player)) {
-            tasks.get(player).cancel();
-            tasks.remove(player);
+        final Player player = (Player) event.getPlayer();
+        if (!event.getInventory().equals(menu.inv)) return;
+        if (task != null) task.cancel();
+        if (commandQueue.containsKey(player)) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    player.performCommand(commandQueue.get(player));
+                    commandQueue.remove(player);
+                }
+            }.runTaskLater(MenuGUI.getPlugin(), 5L);
         }
     }
 
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getClickedInventory() == null) return;
+        if (!event.getClickedInventory().equals(menu.inv) || event.getSlot() != slot) return;
+        if (clickCommand != null) {
+            Player player = (Player) event.getWhoClicked();
+            commandQueue.put(player, clickCommand);
+            player.closeInventory();
+        }
+        event.setCancelled(true);
+    }
 
 }

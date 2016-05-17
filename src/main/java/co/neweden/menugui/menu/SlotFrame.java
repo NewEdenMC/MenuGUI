@@ -29,6 +29,9 @@ public class SlotFrame {
     protected Boolean clearHover = false;
     public SlotFrame clearHoverText() { clearHover = true; return this; }
 
+    protected String command;
+    public SlotFrame setClickCommand(String command) { this.command = command; return this; }
+
     protected Boolean repeate = false;
     public SlotFrame repeate() { repeate = true; return this; }
 

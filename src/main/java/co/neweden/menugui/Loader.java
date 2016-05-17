@@ -57,12 +57,13 @@ public class Loader implements Listener {
             while (rs.next()) {
                 InventorySlot slot = instance.getSlot(rs.getInt("slot"));
                 slot.setMaterial(Material.getMaterial(rs.getString("material")));
-                if (!rs.getString("displayName").equals("")) slot.setDisplayName(rs.getString("displayName"));
+                if (!rs.getString("displayName").isEmpty()) slot.setDisplayName(rs.getString("displayName"));
                 slot.setAmount(rs.getInt("amount"));
                 slot.setDurability(rs.getShort("durability"));
-                // get hover text
                 slot.enableEnchantEffect(rs.getBoolean("enchantEffect"));
+                // get hover text
                 // animation JSON
+                if (!rs.getString("clickCommand").isEmpty()) slot.setClickCommand(rs.getString("clickCommand"));
             }
         } catch (SQLException e) {
             instance.getMenu().getLogger().log(Level.SEVERE, "SQLException occurred while trying to populate data for managed menu.", e);
