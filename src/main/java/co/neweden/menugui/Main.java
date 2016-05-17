@@ -52,6 +52,7 @@ public class Main extends JavaPlugin {
                 Menu menu = MenuGUI.newMenu(rs.getString("name"));
                 menu.setTitle(rs.getString("title"));
                 menu.setOpenCommand(rs.getString("command"));
+                menu.setNumRows(rs.getInt("rows"));
                 getLogger().log(Level.INFO, "Menu " + menu.getName() + " initialized");
             }
         } catch (SQLException e) {

@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 import java.util.logging.Level;
@@ -34,8 +35,11 @@ public class Command extends BukkitCommand {
 
     @Override
     public boolean execute(CommandSender sender, String alias, String[] args) {
-        menu.getLogger().info(name);
-        menu.getLogger().log(Level.WARNING, name);
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("Only players can run this command.");
+            return true;
+        }
+        menu.openMenu((Player) sender);
         return true;
     }
 }
