@@ -2,12 +2,14 @@ package co.neweden.menugui;
 
 import co.neweden.menugui.menu.Menu;
 
+import java.sql.Connection;
 import java.util.HashSet;
 import java.util.Set;
 
 public class MenuGUI {
 
     protected static Main plugin;
+    protected static Connection db;
     private static Set<Menu> menus = new HashSet<>();
 
     private MenuGUI() { }
