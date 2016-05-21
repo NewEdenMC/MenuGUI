@@ -1,7 +1,10 @@
 package co.neweden.menugui.menu;
 
+import co.neweden.menugui.FrameJSON;
 import co.neweden.menugui.MenuGUI;
 import co.neweden.menugui.Util;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -11,7 +14,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,6 +21,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.ChatPaginator;
 
+import java.lang.reflect.Type;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -45,6 +50,33 @@ public class InventorySlot extends SlotFrame implements Listener {
             keys.put(tick, frame);
             return frame;
         }
+    }
+
+    public SlotFrame animationFromJSON(Blob rawJSON) throws SQLException {
+        String json = new String(rawJSON.getBytes(1, (int) rawJSON.length()));
+        animationFromJSON(json);
+        return this;
+    }
+
+    public SlotFrame animationFromJSON(String rawJSON) {
+        Gson gson = new Gson();
+        Type collectionType = new TypeToken<Map<Integer, FrameJSON>>(){}.getType();
+        Map<Integer, FrameJSON> gsonObj = gson.fromJson(rawJSON, collectionType);
+        for (Map.Entry<Integer, FrameJSON> jsonFrameMap : gsonObj.entrySet()) {
+            SlotFrame frame = atTick(jsonFrameMap.getKey());
+            FrameJSON jsonFrame = jsonFrameMap.getValue();
+            System.out.print(jsonFrame.material);
+            if (jsonFrame.material != null) frame.setMaterial(Material.getMaterial(jsonFrame.material));
+            if (jsonFrame.amount != null) frame.setAmount(jsonFrame.amount);
+            if (jsonFrame.durability != null) frame.setDurability(jsonFrame.durability);
+            if (jsonFrame.enchantEffect != null) frame.enableEnchantEffect(jsonFrame.enchantEffect);
+            if (jsonFrame.displayName != null) frame.setDisplayName(jsonFrame.displayName);
+            if (jsonFrame.addHoverText != null) frame.addHoverText(jsonFrame.addHoverText);
+            if (jsonFrame.clearHoverText != null) { if (jsonFrame.clearHoverText) frame.clearHoverText(); }
+            if (jsonFrame.clickCommand != null) frame.setClickCommand(jsonFrame.clickCommand);
+            if (jsonFrame.repeate != null) { if (jsonFrame.repeate) frame.repeate(); }
+        }
+        return this;
     }
 
     private void updateSlot(Integer tick, SlotFrame frame, ItemStack item) {
