@@ -62,8 +62,7 @@ public class Loader implements Listener {
                 slot.setAmount(rs.getInt("amount"));
                 slot.setDurability(rs.getShort("durability"));
                 slot.enableEnchantEffect(rs.getBoolean("enchantEffect"));
-                slot.addHoverText(rs.getBlob("hoverText"));
-                // animation JSON
+                if (rs.getBlob("hoverText").length() > 0) slot.addHoverText(rs.getBlob("hoverText"));
                 if (!rs.getString("clickCommand").isEmpty()) slot.setClickCommand(rs.getString("clickCommand"));
             }
         } catch (SQLException e) {
