@@ -10,6 +10,6 @@ public class FrameJSON {
     public String addHoverText;
     public Boolean clearHoverText;
     public String clickCommand;
-    public Boolean repeate;
+    public Boolean repeat;
 
 }

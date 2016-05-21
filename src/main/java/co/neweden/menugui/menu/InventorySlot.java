@@ -77,8 +77,8 @@ public class InventorySlot extends SlotFrame implements Listener {
                     if (jsonFrame.clearHoverText) frame.clearHoverText();
                 }
                 if (jsonFrame.clickCommand != null) frame.setClickCommand(jsonFrame.clickCommand);
-                if (jsonFrame.repeate != null) {
-                    if (jsonFrame.repeate) frame.repeate();
+                if (jsonFrame.repeat != null) {
+                    if (jsonFrame.repeat) frame.repeat();
                 }
             }
         } catch (NullPointerException e) {
@@ -134,7 +134,7 @@ public class InventorySlot extends SlotFrame implements Listener {
             public void run() {
                 if (keys.get(counter) != null) {
                     updateSlot(counter, keys.get(counter), item);
-                    if (keys.get(counter).repeate) { counter = 0; return; }
+                    if (keys.get(counter).repeat) { counter = 0; return; }
                 }
                 counter++;
             }

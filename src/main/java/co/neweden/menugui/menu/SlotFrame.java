@@ -39,7 +39,7 @@ public class SlotFrame {
     protected String command;
     public SlotFrame setClickCommand(String command) { this.command = command; return this; }
 
-    protected Boolean repeate = false;
-    public SlotFrame repeate() { repeate = true; return this; }
+    protected Boolean repeat = false;
+    public SlotFrame repeat() { repeat = true; return this; }
 
 }
