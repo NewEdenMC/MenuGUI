@@ -2,6 +2,8 @@ package co.neweden.menugui.menu;
 
 import org.bukkit.Material;
 
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,11 @@ public class SlotFrame {
     protected List<String> hoverText = new ArrayList<>();
     public SlotFrame addHoverText(String text) { hoverText.add(text); return this; }
     public SlotFrame addHoverText(List<String> text) { hoverText.addAll(text); return this; }
+    public SlotFrame addHoverText(Blob text) throws SQLException {
+        String hText = new String(text.getBytes(1, (int) text.length()));
+        addHoverText(hText);
+        return this;
+    }
 
     protected Boolean clearHover = false;
     public SlotFrame clearHoverText() { clearHover = true; return this; }

@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -61,7 +62,7 @@ public class Loader implements Listener {
                 slot.setAmount(rs.getInt("amount"));
                 slot.setDurability(rs.getShort("durability"));
                 slot.enableEnchantEffect(rs.getBoolean("enchantEffect"));
-                // get hover text
+                slot.addHoverText(rs.getBlob("hoverText"));
                 // animation JSON
                 if (!rs.getString("clickCommand").isEmpty()) slot.setClickCommand(rs.getString("clickCommand"));
             }
