@@ -58,7 +58,7 @@ public class Menu {
         instance.getSlot(1).atTick(80).repeate();
         End demo testing code */
         for (Map.Entry<Integer, InventorySlot> slot : instance.slots.entrySet()) {
-            slot.getValue().run(player, inv);
+            slot.getValue().run();
         }
         player.openInventory(inv);
     }

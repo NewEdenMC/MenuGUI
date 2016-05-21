@@ -82,7 +82,7 @@ public class InventorySlot extends SlotFrame implements Listener {
         }
     }
 
-    public void run(Player player, final Inventory inv) {
+    public void run() {
         final ItemStack item = new ItemStack(Material.AIR);
         if (keys.size() == 1) {
             updateSlot(0, keys.get(0), item);
