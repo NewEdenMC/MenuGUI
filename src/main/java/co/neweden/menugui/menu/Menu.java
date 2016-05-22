@@ -49,14 +49,6 @@ public class Menu {
         MenuInstance instance = new MenuInstance(this, inv);
         MenuPopulateEvent event = new MenuPopulateEvent(instance);
         Bukkit.getPluginManager().callEvent(event);
-        /* Demo testing code
-        instance.getSlot(1).setMaterial(Material.DIRT).setDisplayName("Ima door!").addHoverText("Yep!");
-        instance.getSlot(1).enableEnchantEffect(true);
-        instance.getSlot(1).atTick(20).setMaterial(Material.STONE);
-        instance.getSlot(1).atTick(40).setMaterial(Material.GRASS).enableEnchantEffect(false);
-        instance.getSlot(1).atTick(60).setMaterial(Material.WOOD).clearHoverText().addHoverText("This item is a Minecraft item, it can be used for things, but right now we use it for stuff in this menu.");
-        instance.getSlot(1).atTick(80).repeate();
-        End demo testing code */
         for (Map.Entry<Integer, InventorySlot> slot : instance.slots.entrySet()) {
             slot.getValue().run();
         }

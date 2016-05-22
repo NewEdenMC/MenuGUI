@@ -66,7 +66,6 @@ public class InventorySlot extends SlotFrame implements Listener {
             for (Map.Entry<Integer, FrameJSON> jsonFrameMap : gsonObj.entrySet()) {
                 SlotFrame frame = atTick(jsonFrameMap.getKey());
                 FrameJSON jsonFrame = jsonFrameMap.getValue();
-                System.out.print(jsonFrame.material);
                 if (jsonFrame.material != null) frame.setMaterial(Material.getMaterial(jsonFrame.material));
                 if (jsonFrame.amount != null) frame.setAmount(jsonFrame.amount);
                 if (jsonFrame.durability != null) frame.setDurability(jsonFrame.durability);
