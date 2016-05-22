@@ -1,5 +1,6 @@
 package co.neweden.menugui.menu;
 
+import co.neweden.menugui.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
@@ -14,10 +15,15 @@ public class Command extends BukkitCommand {
     private Menu menu;
     private String name;
 
-    public Command(Menu menu, String commandName) {
+    public Command(Menu menu, String commandName, String description, String permissionsNode) {
         super(commandName);
         this.menu = menu;
         name = commandName;
+        if (description != null) setDescription(description);
+        if (permissionsNode != null) {
+            setPermission(permissionsNode);
+            setPermissionMessage(Util.formatString("&cYou do not have permission to run that command."));
+        }
     }
 
     public void register() {
@@ -34,6 +40,12 @@ public class Command extends BukkitCommand {
 
     @Override
     public boolean execute(CommandSender sender, String alias, String[] args) {
+        if (getPermission() != null) {
+            if (!sender.hasPermission(getPermission())) {
+                sender.sendMessage(getPermissionMessage());
+                return true;
+            }
+        }
         if (!(sender instanceof Player)) {
             sender.sendMessage("Only players can run this command.");
             return true;

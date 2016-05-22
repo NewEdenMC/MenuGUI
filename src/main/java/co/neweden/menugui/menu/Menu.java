@@ -39,8 +39,9 @@ public class Menu {
     public void setNumRows(Integer numRows) { rows = numRows; }
 
     public Command getOpenCommand() { return command; }
-    public void setOpenCommand(String command) {
-        this.command = new Command(this, command);
+    public void setOpenCommand(String command, String description) { setOpenCommand(command, description, null); }
+    public void setOpenCommand(String command, String description, String permissionsNode) {
+        this.command = new Command(this, command, description, permissionsNode);
         this.command.register();
     }
 

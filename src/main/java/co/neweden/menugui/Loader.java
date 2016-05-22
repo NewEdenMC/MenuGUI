@@ -36,7 +36,7 @@ public class Loader implements Listener {
                 Menu menu = MenuGUI.newMenu(rs.getString("name"));
                 managedMenus.add(menu);
                 menu.setTitle(rs.getString("title"));
-                menu.setOpenCommand(rs.getString("command"));
+                menu.setOpenCommand(rs.getString("command"), rs.getString("commandDescription"), rs.getString("commandPermissionNode"));
                 menu.setNumRows(rs.getInt("rows"));
                 MenuGUI.getPlugin().getLogger().log(Level.INFO, "Menu " + menu.getName() + " initialized");
             }
