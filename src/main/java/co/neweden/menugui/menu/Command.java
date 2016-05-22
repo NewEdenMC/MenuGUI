@@ -13,12 +13,10 @@ import java.util.logging.Level;
 public class Command extends BukkitCommand {
 
     private Menu menu;
-    private String name;
 
     public Command(Menu menu, String commandName, String description, String permissionsNode) {
         super(commandName);
         this.menu = menu;
-        name = commandName;
         if (description != null) setDescription(description);
         if (permissionsNode != null) {
             setPermission(permissionsNode);
@@ -27,14 +25,14 @@ public class Command extends BukkitCommand {
     }
 
     public void register() {
-        if (menu.getPlugin().getCommand(name) != null) return;
+        if (menu.getPlugin().getCommand(getName()) != null) return;
         try {
             final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             bukkitCommandMap.setAccessible(true);
             CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-            commandMap.register(name, this);
+            commandMap.register(getName(), this);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            menu.getLogger().log(Level.SEVERE, "Unable to register command: " + name, e);
+            menu.getLogger().log(Level.SEVERE, "Unable to register command: " + getName(), e);
         }
     }
 
