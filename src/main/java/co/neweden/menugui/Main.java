@@ -13,6 +13,7 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
         if (!getConfig().getBoolean("apiOnlyMode", false)) {
             loadDBConnection();
+            setupDB();
             Loader loader = new Loader();
             loader.loadDBMenus();
         } else
@@ -38,6 +39,25 @@ public class Main extends JavaPlugin {
         }
         getLogger().log(Level.INFO, "Connected to MySQL Database");
         return true;
+    }
+
+    private void setupDB() {
+        try {
+            MenuGUI.db.createStatement().execute(
+                    "CREATE TABLE IF NOT EXISTS `menus` (\n" +
+                    "  `name` varchar(32) NOT NULL,\n" +
+                    "  `enabled` tinyint(1) NOT NULL DEFAULT '1',\n" +
+                    "  `title` varchar(128) DEFAULT NULL,\n" +
+                    "  `rows` int(11) DEFAULT '1',\n" +
+                    "  `command` varchar(64) DEFAULT NULL,\n" +
+                    "  `commandDescription` varchar(128) DEFAULT NULL,\n" +
+                    "  `commandPermissionNode` varchar(128) DEFAULT NULL,\n" +
+                    "  PRIMARY KEY (`name`)\n" +
+                    ")"
+            );
+        } catch (SQLException e) {
+            getLogger().log(Level.SEVERE, "Unable to setup setup database", e);
+        }
     }
 
 }
