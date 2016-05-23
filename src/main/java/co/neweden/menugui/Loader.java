@@ -32,12 +32,8 @@ public class Loader implements Listener {
             Statement st = MenuGUI.db.createStatement();
             rs = st.executeQuery("SELECT * FROM menus;");
             while (rs.next()) {
-                if (!rs.getBoolean("enabled")) continue;
-                Menu menu = MenuGUI.newMenu(rs.getString("name"));
-                managedMenus.add(menu);
-                menu.setTitle(rs.getString("title"));
-                menu.setOpenCommand(rs.getString("command"), rs.getString("commandDescription"), rs.getString("commandPermissionNode"));
-                menu.setNumRows(rs.getInt("rows"));
+                Menu menu = loadDBMenu(rs);
+                if (menu == null) continue;
                 MenuGUI.getPlugin().getLogger().log(Level.INFO, "Menu " + menu.getName() + " initialized");
             }
         } catch (SQLException e) {
@@ -48,6 +44,17 @@ public class Loader implements Listener {
             return false;
         }
         return true;
+    }
+
+    protected Menu loadDBMenu(ResultSet rs) throws SQLException {
+        if (!rs.getBoolean("enabled")) return null;
+        Menu menu = MenuGUI.newMenu(rs.getString("name"));
+        managedMenus.add(menu);
+        menu.setTitle(rs.getString("title"));
+        menu.setOpenCommand(rs.getString("command"), rs.getString("commandDescription"), rs.getString("commandPermissionNode"));
+        menu.setNumRows(rs.getInt("rows"));
+        MenuGUI.getPlugin().getLogger().log(Level.INFO, "Menu " + menu.getName() + " initialized");
+        return menu;
     }
 
     @EventHandler
