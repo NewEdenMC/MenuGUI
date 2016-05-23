@@ -1,11 +1,14 @@
 package co.neweden.menugui;
 
+import co.neweden.menugui.menu.Menu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class Commands implements CommandExecutor {
@@ -20,6 +23,7 @@ public class Commands implements CommandExecutor {
         if (args.length > 0) {
             switch (args[0]) {
                 case "reload": reloadCommand(sender); break;
+                case "list": listCommand(sender); break;
                 case "create": createCommand(sender, args); break;
                 default: sender.sendMessage(Util.formatString("&cThe sub-command you ran is not valid."));
             }
@@ -28,7 +32,8 @@ public class Commands implements CommandExecutor {
 
         sender.sendMessage(Util.formatString(
                 "&bMenuGUI Sub-commands\n" +
-                "&f- &areload&e: reload the plugin"
+                "&f- &areload&e: reload the plugin" +
+                "&f- &alist&f: list current menus"
         ));
         if (MenuGUI.isAPIOnlyMode()) {
             sender.sendMessage(Util.formatString("&cMenuGUI is running in API only mode, therefor limited sub-commands are available"));
@@ -45,6 +50,29 @@ public class Commands implements CommandExecutor {
             sender.sendMessage(Util.formatString("&aReloaded plugin."));
         else
             sender.sendMessage(Util.formatString("&cUnable to reload plugin, check the server console for errors."));
+    }
+
+    private void listCommand(CommandSender sender) {
+        HashMap<String, String> menuInfo = new HashMap<>();
+        for (Menu menu : MenuGUI.getMenus()) {
+            menuInfo.put(menu.getName(), "&eAPI");
+        }
+        try {
+            ResultSet rs = MenuGUI.db.createStatement().executeQuery("SELECT name,enabled FROM menus;");
+            while (rs.next()) {
+                if (menuInfo.containsKey(rs.getString("name")))
+                    menuInfo.put(rs.getString("name"), "&aDatabase (loaded)");
+                else
+                    menuInfo.put(rs.getString("name"), "&cDatabase (not loaded)");
+            }
+        } catch (SQLException e) {
+            sender.sendMessage(Util.formatString("&cAn error has occurred, check the server console for any exceptions."));
+            MenuGUI.getPlugin().getLogger().log(Level.SEVERE, "An SQL Exception occurred while trying to list menus", e);
+        }
+        sender.sendMessage(Util.formatString("&bAvailable menus:"));
+        for (Map.Entry<String, String> entry : menuInfo.entrySet()) {
+            sender.sendMessage(Util.formatString("&7- &f" + entry.getKey() + "&7: " + entry.getValue()));
+        }
     }
 
     private void createCommand(CommandSender sender, String[] args) {
