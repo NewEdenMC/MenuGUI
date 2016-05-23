@@ -10,7 +10,7 @@ public class MenuGUI {
 
     protected static Main plugin;
     protected static Connection db;
-    private static Set<Menu> menus = new HashSet<>();
+    protected static Set<Menu> menus = new HashSet<>();
 
     private MenuGUI() { }
 

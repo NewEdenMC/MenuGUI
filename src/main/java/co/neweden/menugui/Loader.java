@@ -25,7 +25,7 @@ public class Loader implements Listener {
         Bukkit.getPluginManager().registerEvents(this, MenuGUI.getPlugin());
     }
 
-    protected void loadDBMenus() {
+    protected boolean loadDBMenus() {
         MenuGUI.getPlugin().getLogger().log(Level.INFO, "Preparing to initialize menus from database.");
         ResultSet rs;
         try {
@@ -45,7 +45,9 @@ public class Loader implements Listener {
         }
         if (MenuGUI.getMenus().size() == 0) {
             MenuGUI.getPlugin().getLogger().log(Level.INFO, "No menus initialized from databases, other plugins that use this API may now initialize their onw menus.");
+            return false;
         }
+        return true;
     }
 
     @EventHandler

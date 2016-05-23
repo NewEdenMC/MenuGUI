@@ -24,16 +24,32 @@ public class Command extends BukkitCommand {
         }
     }
 
-    public void register() {
-        if (menu.getPlugin().getCommand(getName()) != null) return;
+    public boolean register() {
+        if (menu.getPlugin().getCommand(getName()) != null) return true;
         try {
-            final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-            bukkitCommandMap.setAccessible(true);
-            CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-            commandMap.register(getName(), this);
+            getCommandMap().register(getName(), this);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             menu.getLogger().log(Level.SEVERE, "Unable to register command: " + getName(), e);
+            return false;
         }
+        return true;
+    }
+
+    public boolean unregister() {
+        if (menu.getPlugin().getCommand(getName()) != null) return true;
+        try {
+            unregister(getCommandMap());
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            menu.getLogger().log(Level.SEVERE, "Unable to un-register command: " + getName(), e);
+            return false;
+        }
+        return true;
+    }
+
+    private CommandMap getCommandMap() throws NoSuchFieldException, IllegalAccessException {
+        final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+        bukkitCommandMap.setAccessible(true);
+        return (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
     }
 
     @Override

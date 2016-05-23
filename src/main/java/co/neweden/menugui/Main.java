@@ -1,5 +1,6 @@
 package co.neweden.menugui;
 
+import co.neweden.menugui.menu.Menu;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.*;
@@ -10,14 +11,38 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         MenuGUI.plugin = this;
+        startup();
+        getCommand("menugui").setExecutor(new Commands(this));
+    }
+
+    private boolean startup() {
         saveDefaultConfig();
         if (!getConfig().getBoolean("apiOnlyMode", false)) {
-            loadDBConnection();
-            setupDB();
+            if (!loadDBConnection()) return false;
+            if (!setupDB()) return false;
             Loader loader = new Loader();
-            loader.loadDBMenus();
+            if (!loader.loadDBMenus()) return false;
         } else
             getLogger().log(Level.INFO, "Based on the config option apiOnlyMode the plugin will run in API only mode.");
+        return true;
+    }
+
+    public boolean reload() {
+        for (Menu menu : MenuGUI.getMenus()) {
+            if (!menu.getOpenCommand().unregister()) return false;
+        }
+
+        MenuGUI.menus.clear();
+        if (!MenuGUI.menus.isEmpty()) return false;
+
+        try {
+            MenuGUI.db.close();
+        } catch (SQLException e) {
+            getLogger().log(Level.SEVERE, "Unable to close database connection", e);
+            return false;
+        }
+
+        return startup();
     }
 
     private boolean loadDBConnection() {
@@ -41,7 +66,7 @@ public class Main extends JavaPlugin {
         return true;
     }
 
-    private void setupDB() {
+    private boolean setupDB() {
         try {
             MenuGUI.db.createStatement().execute(
                     "CREATE TABLE IF NOT EXISTS `menus` (\n" +
@@ -57,7 +82,9 @@ public class Main extends JavaPlugin {
             );
         } catch (SQLException e) {
             getLogger().log(Level.SEVERE, "Unable to setup setup database", e);
+            return false;
         }
+        return true;
     }
 
 }
