@@ -85,11 +85,12 @@ public class Commands implements CommandExecutor {
             return;
         }
         try {
-            ResultSet rs = MenuGUI.db.createStatement().executeQuery("SELECT name FROM menus;");
-            if (!rs.isBeforeFirst()) {
+            ResultSet rs = MenuGUI.db.createStatement().executeQuery("SELECT name FROM menus WHERE name='" + args[1] + "';");
+            if (rs.isBeforeFirst()) {
                 sender.sendMessage(Util.formatString("&cThe menu name you have provided already exists."));
+                return;
             }
-            MenuGUI.db.createStatement().execute("INSERT INTO `menus` (`name`, `enabled`) VALUES ('" + args[1] + "', '1');");
+            MenuGUI.db.createStatement().executeUpdate("INSERT INTO `menus` (`name`, `enabled`) VALUES ('" + args[1] + "', '1');");
             MenuGUI.db.createStatement().execute(
                     "CREATE TABLE IF NOT EXISTS `menu_" + args[1] + "` (\n" +
                     "  `slot` int(11) NOT NULL,\n" +
