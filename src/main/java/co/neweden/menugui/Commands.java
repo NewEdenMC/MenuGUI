@@ -25,7 +25,7 @@ public class Commands implements CommandExecutor {
                 "&bMenuGUI Sub-commands\n" +
                 "&f- &areload&e: reload the plugin"
         ));
-        if (plugin.getConfig().getBoolean("apiOnlyMode", false)) {
+        if (MenuGUI.isAPIOnlyMode()) {
             sender.sendMessage(Util.formatString("&cMenuGUI is running in API only mode, therefor limited sub-commands are available"));
             return true;
         }

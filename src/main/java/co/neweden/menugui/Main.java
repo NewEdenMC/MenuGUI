@@ -17,7 +17,8 @@ public class Main extends JavaPlugin {
 
     private boolean startup() {
         saveDefaultConfig();
-        if (!getConfig().getBoolean("apiOnlyMode", false)) {
+        MenuGUI.apiOnlyMode = getConfig().getBoolean("apiOnlyMode", false);
+        if (!MenuGUI.isAPIOnlyMode()) {
             if (!loadDBConnection()) return false;
             if (!setupDB()) return false;
             Loader loader = new Loader();

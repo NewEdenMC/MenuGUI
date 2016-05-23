@@ -11,6 +11,7 @@ public class MenuGUI {
     protected static Main plugin;
     protected static Connection db;
     protected static Set<Menu> menus = new HashSet<>();
+    protected static Boolean apiOnlyMode;
 
     private MenuGUI() { }
 
@@ -23,5 +24,7 @@ public class MenuGUI {
     }
 
     public static Main getPlugin() { return plugin; }
+
+    public static Boolean isAPIOnlyMode() { return apiOnlyMode; }
 
 }
