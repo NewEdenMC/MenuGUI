@@ -1,8 +1,10 @@
 package co.neweden.menugui.menu;
 
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class MenuInstance {
 
@@ -24,6 +26,14 @@ public class MenuInstance {
             InventorySlot invSlot = new InventorySlot(this, slot);
             slots.put(slot, invSlot);
             return invSlot;
+        }
+    }
+
+    public List<HumanEntity> getViewers() { return inv.getViewers(); }
+
+    public void closeMenu() {
+        for (HumanEntity human : getViewers()) {
+            human.closeInventory();
         }
     }
 
