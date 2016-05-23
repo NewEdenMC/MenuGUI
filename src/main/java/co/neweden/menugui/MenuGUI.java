@@ -17,6 +17,14 @@ public class MenuGUI {
 
     public static Set<Menu> getMenus() { return new HashSet<>(menus); }
 
+    public static Menu getMenu(String menuName) {
+        for (Menu menu : getMenus()) {
+            if (menu.getName().equals(menuName))
+                return menu;
+        }
+        return null;
+    }
+
     public static Menu newMenu(String menuName) {
         Menu menu = new Menu(plugin, menuName);
         menus.add(menu);
