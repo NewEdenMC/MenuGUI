@@ -30,7 +30,7 @@ public class Main extends JavaPlugin {
 
     public boolean reload() {
         for (Menu menu : MenuGUI.getMenus()) {
-            if (!menu.getOpenCommand().unregister()) return false;
+            if (!MenuGUI.unloadMenu(menu)) return false;
         }
 
         MenuGUI.menus.clear();

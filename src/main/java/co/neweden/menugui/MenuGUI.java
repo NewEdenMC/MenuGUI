@@ -1,6 +1,8 @@
 package co.neweden.menugui;
 
 import co.neweden.menugui.menu.Menu;
+import co.neweden.menugui.menu.MenuInstance;
+import co.neweden.menugui.menu.SlotFrame;
 
 import java.sql.Connection;
 import java.util.HashSet;
@@ -29,6 +31,15 @@ public class MenuGUI {
         Menu menu = new Menu(plugin, menuName);
         menus.add(menu);
         return menu;
+    }
+
+    public static boolean unloadMenu(Menu menu) {
+        if (!menu.getOpenCommand().unregister()) return false;
+        if (!menus.remove(menu)) return false;
+        for (MenuInstance instance : menu.getMenuInstances()) {
+            instance.closeMenu();
+        }
+        return true;
     }
 
     public static Main getPlugin() { return plugin; }
