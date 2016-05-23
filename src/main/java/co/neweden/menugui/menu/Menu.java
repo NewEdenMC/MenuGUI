@@ -7,7 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Menu {
 
@@ -18,6 +20,7 @@ public class Menu {
     private Command command;
     private Logger logger;
     private Integer rows = 1;
+    private Set<MenuInstance> instances = new HashSet<>();
 
     public Menu(Main plugin, String name) {
         this.plugin = plugin;
@@ -45,9 +48,12 @@ public class Menu {
         this.command.register();
     }
 
+    public Set<MenuInstance> getMenuInstances() { return new HashSet<>(instances); }
+
     public void openMenu(Player player) {
         Inventory inv = Bukkit.createInventory(player, rows * 9, getTitle());
         MenuInstance instance = new MenuInstance(this, inv);
+        instances.add(instance);
         MenuPopulateEvent event = new MenuPopulateEvent(instance);
         Bukkit.getPluginManager().callEvent(event);
         for (Map.Entry<Integer, InventorySlot> slot : instance.slots.entrySet()) {
