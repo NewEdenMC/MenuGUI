@@ -25,6 +25,7 @@ public class Command extends BukkitCommand {
     }
 
     public boolean register() {
+        if (getName() == null) return true;
         if (menu.getPlugin().getCommand(getName()) != null) return true;
         try {
             getCommandMap().register(getName(), this);
@@ -36,6 +37,7 @@ public class Command extends BukkitCommand {
     }
 
     public boolean unregister() {
+        if (getName() == null) return true;
         if (menu.getPlugin().getCommand(getName()) != null) return true;
         try {
             unregister(getCommandMap());
