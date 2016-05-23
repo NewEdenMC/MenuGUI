@@ -25,6 +25,7 @@ public class Commands implements CommandExecutor {
                 case "reload": reloadCommand(sender); break;
                 case "list": listCommand(sender); break;
                 case "create": createCommand(sender, args); break;
+                case "remove": removeCommand(sender, args); break;
                 default: sender.sendMessage(Util.formatString("&cThe sub-command you ran is not valid."));
             }
             return true;
@@ -40,7 +41,8 @@ public class Commands implements CommandExecutor {
             return true;
         }
         sender.sendMessage(Util.formatString(
-                "&f- &acreate&e: create new menu"
+                "&f- &acreate&e: create new menu\n" +
+                "&f- &aremove&e: remove existing menu entry from database"
         ));
         return true;
     }
@@ -118,6 +120,36 @@ public class Commands implements CommandExecutor {
         } catch (SQLException e) {
             sender.sendMessage(Util.formatString("&cUnable to create menu, check the server console for errors."));
             MenuGUI.getPlugin().getLogger().log(Level.SEVERE, "Unable to create menu, an exception occurred while executing the SQL query.", e);
+        }
+    }
+
+    private void removeCommand(CommandSender sender, String[] args) {
+        if (MenuGUI.isAPIOnlyMode()) {
+            sender.sendMessage(Util.formatString("&cThis command is not supported in API Only Mode"));
+            return;
+        }
+        if (args.length < 2) {
+            sender.sendMessage(Util.formatString("&cYou did not specify the name of the menu to remove, usage: remove <name>"));
+            return;
+        }
+        try {
+            ResultSet rs = MenuGUI.db.createStatement().executeQuery("SELECT name FROM menus WHERE name='" + args[1] + "';");
+            if (!rs.isBeforeFirst()) {
+                sender.sendMessage(Util.formatString("&cThe menu name you have provided does not exists."));
+                return;
+            }
+            MenuGUI.db.createStatement().executeUpdate("DELETE FROM menus WHERE name='" + args[1] + "';");
+
+            Menu menu = MenuGUI.getMenu(args[1]);
+            if (menu != null) {
+                MenuGUI.unloadMenu(menu);
+                sender.sendMessage(Util.formatString("&aMenu has been unloaded."));
+            }
+
+            sender.sendMessage(Util.formatString("&aMenu entry has been removed from the 'menus' database table, the database table 'menu_" + args[1] + "' has not been removed, however it is now safe to remove this table."));
+        } catch (SQLException e) {
+            sender.sendMessage(Util.formatString("&cUnable to remove menu, check the server console for errors."));
+            MenuGUI.getPlugin().getLogger().log(Level.SEVERE, "Unable to remove menu, an exception occurred while executing the SQL query.", e);
         }
     }
 
