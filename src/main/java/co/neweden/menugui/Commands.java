@@ -32,7 +32,7 @@ public class Commands implements CommandExecutor {
 
         sender.sendMessage(Util.formatString(
                 "&bMenuGUI Sub-commands\n" +
-                "&f- &areload&e: reload the plugin" +
+                "&f- &areload&e: reload the plugin\n" +
                 "&f- &alist&f: list current menus"
         ));
         if (MenuGUI.isAPIOnlyMode()) {
