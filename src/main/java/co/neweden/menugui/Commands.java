@@ -57,6 +57,19 @@ public class Commands implements CommandExecutor {
         for (Menu menu : MenuGUI.getMenus()) {
             menuInfo.put(menu.getName(), "&eAPI");
         }
+        listCommandGetDBLIst(sender, menuInfo);
+        if (menuInfo.isEmpty()) {
+            sender.sendMessage(Util.formatString("&bNo available menus"));
+            return;
+        }
+        sender.sendMessage(Util.formatString("&bAvailable menus:"));
+        for (Map.Entry<String, String> entry : menuInfo.entrySet()) {
+            sender.sendMessage(Util.formatString("&7- &f" + entry.getKey() + "&7: " + entry.getValue()));
+        }
+    }
+
+    private void listCommandGetDBLIst(CommandSender sender, HashMap<String, String> menuInfo) {
+        if (MenuGUI.db == null) return;
         try {
             ResultSet rs = MenuGUI.db.createStatement().executeQuery("SELECT name,enabled FROM menus;");
             while (rs.next()) {
@@ -68,10 +81,6 @@ public class Commands implements CommandExecutor {
         } catch (SQLException e) {
             sender.sendMessage(Util.formatString("&cAn error has occurred, check the server console for any exceptions."));
             MenuGUI.getPlugin().getLogger().log(Level.SEVERE, "An SQL Exception occurred while trying to list menus", e);
-        }
-        sender.sendMessage(Util.formatString("&bAvailable menus:"));
-        for (Map.Entry<String, String> entry : menuInfo.entrySet()) {
-            sender.sendMessage(Util.formatString("&7- &f" + entry.getKey() + "&7: " + entry.getValue()));
         }
     }
 
