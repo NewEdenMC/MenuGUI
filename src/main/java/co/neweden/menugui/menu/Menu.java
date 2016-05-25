@@ -50,7 +50,7 @@ public class Menu {
 
     public Set<MenuInstance> getMenuInstances() { return new HashSet<>(instances); }
 
-    public void openMenu(Player player) {
+    public MenuInstance openMenu(Player player) {
         Inventory inv = Bukkit.createInventory(player, rows * 9, getTitle());
         MenuInstance instance = new MenuInstance(this, inv);
         instances.add(instance);
@@ -60,6 +60,7 @@ public class Menu {
             slot.getValue().run();
         }
         player.openInventory(inv);
+        return instance;
     }
 
 }
