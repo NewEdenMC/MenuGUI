@@ -34,7 +34,9 @@ public class MenuGUI {
     }
 
     public static boolean unloadMenu(Menu menu) {
-        if (!menu.getOpenCommand().unregister()) return false;
+        if (menu.getOpenCommand() != null) {
+            if (!menu.getOpenCommand().unregister()) return false;
+        }
         if (!menus.remove(menu)) return false;
         for (MenuInstance instance : menu.getMenuInstances()) {
             instance.closeMenu();
