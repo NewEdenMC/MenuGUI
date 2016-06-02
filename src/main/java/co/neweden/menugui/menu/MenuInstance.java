@@ -3,6 +3,8 @@ package co.neweden.menugui.menu;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class MenuInstance {
         }
     }
 
-    public List<HumanEntity> getViewers() { return inv.getViewers(); }
+    public Collection<HumanEntity> getViewers() { return new ArrayList<>(inv.getViewers()); }
 
     public void closeMenu() {
         for (HumanEntity human : getViewers()) {
