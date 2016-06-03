@@ -54,7 +54,7 @@ public class Menu {
         Inventory inv = Bukkit.createInventory(player, rows * 9, getTitle());
         MenuInstance instance = new MenuInstance(this, inv);
         instances.add(instance);
-        MenuPopulateEvent event = new MenuPopulateEvent(instance);
+        MenuPopulateEvent event = new MenuPopulateEvent(instance, player);
         Bukkit.getPluginManager().callEvent(event);
         for (Map.Entry<Integer, InventorySlot> slot : instance.slots.entrySet()) {
             slot.getValue().run();
