@@ -39,7 +39,6 @@ public final class Util {
 		String[] parts = input.split(" ");
 		int lineLen = 0;
 		for (int i = 0; i < parts.length; i++) {
-			System.out.print(parts[i]);
 			//if (i == parts.length - 1) continue; // if last word, skip it as nothing after to break
 			if (i > 0) lineLen++; // Account for the missing space in the line character count
 
@@ -55,7 +54,6 @@ public final class Util {
 				parts[i - 1] += "\n"; // Add linebreak before word so this word will start the next line
 			else if (lineLen == 0 && parts.length > 1)
 				parts[i] += "\n"; // Add linebreak after word if it's only word on line and the paragraph has more than one word (to avoid a random linebreak after word)
-			System.out.print(parts[i] + "(" + lineLen + ")");
 
 			lineLen = 0;
 		}
