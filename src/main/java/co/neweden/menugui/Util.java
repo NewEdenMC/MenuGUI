@@ -45,7 +45,6 @@ public final class Util {
 			int newLength = lineLen + parts[i].length();
 			if (newLength < maxLineLength) { // If line + word length doesn't exceed max line length keep going
 				lineLen = newLength;
-				System.out.print(parts[i] + "(" + lineLen + ")");
 				continue;
 			}
 
