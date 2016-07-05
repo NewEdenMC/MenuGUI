@@ -4,6 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public final class Util {
 	
 	private Util() { }
@@ -56,7 +59,15 @@ public final class Util {
 
 			lineLen = 0;
 		}
-		return String.join(" ", parts);
+		String out = "";
+		String formatting = "";
+		for (String line : String.join(" ", parts).split("\n")) {
+			out += formatting + line + "\n";
+			Matcher matcher = Pattern.compile("(\u00A7|&)[0-9a-fk-o]").matcher(line);
+			if (matcher.find())
+				formatting = matcher.group();
+		}
+		return out;
 	}
 	
 }
