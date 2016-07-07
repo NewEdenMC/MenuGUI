@@ -4,7 +4,9 @@ import co.neweden.menugui.FrameJSON;
 import co.neweden.menugui.MenuGUI;
 import co.neweden.menugui.Util;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -19,7 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.ChatPaginator;
 
 import java.lang.reflect.Type;
 import java.sql.Blob;
@@ -52,36 +53,38 @@ public class InventorySlot extends SlotFrame implements Listener {
         }
     }
 
-    public SlotFrame animationFromJSON(Blob rawJSON) throws SQLException, IllegalArgumentException {
+    public SlotFrame animationFromJSON(Blob rawJSON) throws SQLException {
         String json = new String(rawJSON.getBytes(1, (int) rawJSON.length()));
         animationFromJSON(json);
         return this;
     }
 
-    public SlotFrame animationFromJSON(String rawJSON) throws IllegalStateException {
+    public SlotFrame animationFromJSON(String rawJSON) {
+        Validate.notNull(rawJSON, "null passed instead of json string");
         Gson gson = new Gson();
         Type collectionType = new TypeToken<Map<Integer, FrameJSON>>(){}.getType();
+        Map<Integer, FrameJSON> gsonObj;
         try {
-            Map<Integer, FrameJSON> gsonObj = gson.fromJson(rawJSON, collectionType);
-            for (Map.Entry<Integer, FrameJSON> jsonFrameMap : gsonObj.entrySet()) {
-                SlotFrame frame = atTick(jsonFrameMap.getKey());
-                FrameJSON jsonFrame = jsonFrameMap.getValue();
-                if (jsonFrame.material != null) frame.setMaterial(Material.getMaterial(jsonFrame.material));
-                if (jsonFrame.amount != null) frame.setAmount(jsonFrame.amount);
-                if (jsonFrame.durability != null) frame.setDurability(jsonFrame.durability);
-                if (jsonFrame.enchantEffect != null) frame.enableEnchantEffect(jsonFrame.enchantEffect);
-                if (jsonFrame.displayName != null) frame.setDisplayName(jsonFrame.displayName);
-                if (jsonFrame.addHoverText != null) frame.addHoverText(jsonFrame.addHoverText);
-                if (jsonFrame.clearHoverText != null) {
-                    if (jsonFrame.clearHoverText) frame.clearHoverText();
-                }
-                if (jsonFrame.clickCommand != null) frame.setClickCommand(jsonFrame.clickCommand);
-                if (jsonFrame.repeat != null) {
-                    if (jsonFrame.repeat) frame.repeat();
-                }
+             gsonObj = gson.fromJson(rawJSON, collectionType);
+        } catch (JsonSyntaxException e) {
+            menu.getMenu().getLogger().severe("A Syntax Exception occurred while trying to parse JSON at slot " + slot +  ": " + e.getMessage()); return this;
+        }
+        for (Map.Entry<Integer, FrameJSON> jsonFrameMap : gsonObj.entrySet()) {
+            SlotFrame frame = atTick(jsonFrameMap.getKey());
+            FrameJSON jsonFrame = jsonFrameMap.getValue();
+            if (jsonFrame.material != null) frame.setMaterial(Material.getMaterial(jsonFrame.material));
+            if (jsonFrame.amount != null) frame.setAmount(jsonFrame.amount);
+            if (jsonFrame.durability != null) frame.setDurability(jsonFrame.durability);
+            if (jsonFrame.enchantEffect != null) frame.enableEnchantEffect(jsonFrame.enchantEffect);
+            if (jsonFrame.displayName != null) frame.setDisplayName(jsonFrame.displayName);
+            if (jsonFrame.addHoverText != null) frame.addHoverText(jsonFrame.addHoverText);
+            if (jsonFrame.clearHoverText != null) {
+                if (jsonFrame.clearHoverText) frame.clearHoverText();
             }
-        } catch (NullPointerException e) {
-            throw new IllegalStateException("No valid JSON passed, null given", e);
+            if (jsonFrame.clickCommand != null) frame.setClickCommand(jsonFrame.clickCommand);
+            if (jsonFrame.repeat != null) {
+                if (jsonFrame.repeat) frame.repeat();
+            }
         }
         return this;
     }
