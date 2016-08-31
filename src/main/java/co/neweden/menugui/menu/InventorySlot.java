@@ -143,7 +143,7 @@ public class InventorySlot extends SlotFrame implements Listener {
         }.runTaskTimer(MenuGUI.getPlugin(), 0L, 1L);
     }
 
-    HashMap<Player, String> commandQueue = new HashMap<>();
+    private HashMap<Player, String> commandQueue = new HashMap<>();
 
     @EventHandler (priority = EventPriority.MONITOR)
     public void onInventoryClose(InventoryCloseEvent event) {
