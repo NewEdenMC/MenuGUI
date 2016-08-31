@@ -33,7 +33,7 @@ public class InventorySlot extends SlotFrame implements Listener {
     private MenuInstance menu;
     private Integer slot;
     private TreeMap<Integer, SlotFrame> keys = new TreeMap<>();
-    private BukkitTask task;
+    protected BukkitTask task;
     private String clickCommand;
 
     public InventorySlot(MenuInstance menu, Integer slot) {
