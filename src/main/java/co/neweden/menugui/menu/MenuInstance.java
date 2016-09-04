@@ -39,14 +39,14 @@ public class MenuInstance {
 
     public void repopulate() {
         for (InventorySlot slot : slots.values()) {
-            slot.task.cancel();
+            if (slot.task != null) slot.task.cancel();
         }
         slots.clear();
         for (HumanEntity viewer : getViewers()) {
             MenuPopulateEvent event = new MenuPopulateEvent(this, (Player) viewer);
             Bukkit.getPluginManager().callEvent(event);
         }
-        for (int i = 0; i <= menu.getNumRows() * 9; i++) {
+        for (int i = 0; i < menu.getNumRows() * 9; i++) {
             if (slots.containsKey(i)) {
                 slots.get(i).run();
             } else

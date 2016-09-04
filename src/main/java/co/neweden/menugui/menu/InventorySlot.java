@@ -116,7 +116,7 @@ public class InventorySlot extends SlotFrame implements Listener {
                 }
                 meta.setLore(lore);
             }
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            if (meta != null) meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             item.setItemMeta(meta);
             menu.inv.setItem(slot, item);
         } catch (Throwable e) {
