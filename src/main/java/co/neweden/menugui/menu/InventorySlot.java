@@ -35,6 +35,7 @@ public class InventorySlot extends SlotFrame implements Listener {
     private TreeMap<Integer, SlotFrame> keys = new TreeMap<>();
     protected BukkitTask task;
     private String clickCommand;
+    private boolean closeOnClick;
 
     public InventorySlot(MenuInstance menu, Integer slot) {
         this.menu = menu;
@@ -118,6 +119,7 @@ public class InventorySlot extends SlotFrame implements Listener {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             item.setItemMeta(meta);
             if (frame.command != null) clickCommand = frame.command;
+            closeOnClick = frame.closeOnClick;
             menu.inv.setItem(slot, item);
         } catch (Throwable e) {
             menu.getMenu().getLogger().log(Level.SEVERE, String.format("Exception occurred while updating slot %s at frame %s.", slot, tick), e);
@@ -167,8 +169,11 @@ public class InventorySlot extends SlotFrame implements Listener {
         if (!event.getClickedInventory().equals(menu.inv) || event.getSlot() != slot) return;
         if (clickCommand != null) {
             Player player = (Player) event.getWhoClicked();
-            commandQueue.put(player, clickCommand);
-            player.closeInventory();
+            if (closeOnClick) {
+                commandQueue.put(player, clickCommand);
+                player.closeInventory();
+            } else
+                player.performCommand(clickCommand);
         }
         event.setCancelled(true);
     }
