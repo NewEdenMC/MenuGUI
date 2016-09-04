@@ -41,6 +41,9 @@ public class SlotFrame {
     public SlotFrame setClickCommand(String command) { setClickCommand(command, true); return this; }
     public SlotFrame setClickCommand(String command, boolean closeOnClick) { this.command = command; this.closeOnClick = closeOnClick; return this; }
 
+    protected MenuRunnable runnable;
+    public SlotFrame runOnClick(MenuRunnable runnable) { this.runnable = runnable; return this; }
+
     protected Boolean repeat = false;
     public SlotFrame repeat() { repeat = true; return this; }
 

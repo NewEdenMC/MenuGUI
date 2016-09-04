@@ -34,8 +34,7 @@ public class InventorySlot extends SlotFrame implements Listener {
     private Integer slot;
     private TreeMap<Integer, SlotFrame> keys = new TreeMap<>();
     protected BukkitTask task;
-    private String clickCommand;
-    private boolean closeOnClick;
+    private SlotFrame currentSlot;
 
     public InventorySlot(MenuInstance menu, Integer slot) {
         this.menu = menu;
@@ -93,6 +92,7 @@ public class InventorySlot extends SlotFrame implements Listener {
     private void updateSlot(Integer tick, SlotFrame frame, ItemStack item) {
         try {
             if (tick == 0) item.setType(Material.AIR); // Reset ItemStack if we are at the start of the animation
+            currentSlot = frame;
             if (frame.material != null) item.setType(frame.material);
             if (frame.amount != null) item.setAmount(frame.amount);
             if (frame.durability != null) item.setDurability(frame.durability);
@@ -118,8 +118,6 @@ public class InventorySlot extends SlotFrame implements Listener {
             }
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             item.setItemMeta(meta);
-            if (frame.command != null) clickCommand = frame.command;
-            closeOnClick = frame.closeOnClick;
             menu.inv.setItem(slot, item);
         } catch (Throwable e) {
             menu.getMenu().getLogger().log(Level.SEVERE, String.format("Exception occurred while updating slot %s at frame %s.", slot, tick), e);
@@ -167,13 +165,17 @@ public class InventorySlot extends SlotFrame implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
         if (!event.getClickedInventory().equals(menu.inv) || event.getSlot() != slot) return;
-        if (clickCommand != null) {
+        if (currentSlot.runnable != null) {
+            currentSlot.runnable.instance = menu;
+            currentSlot.runnable.run();
+        }
+        if (currentSlot.command != null) {
             Player player = (Player) event.getWhoClicked();
-            if (closeOnClick) {
-                commandQueue.put(player, clickCommand);
+            if (currentSlot.closeOnClick) {
+                commandQueue.put(player, currentSlot.command);
                 player.closeInventory();
             } else
-                player.performCommand(clickCommand);
+                player.performCommand(currentSlot.command);
         }
         event.setCancelled(true);
     }
