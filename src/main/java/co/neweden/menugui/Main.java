@@ -11,7 +11,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         MenuGUI.plugin = this;
-        startup();
+        if (!startup()) getServer().getPluginManager().disablePlugin(this);
         getCommand("menugui").setExecutor(new Commands(this));
     }
 
