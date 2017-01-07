@@ -1,18 +1,22 @@
 package co.neweden.menugui.menu;
 
+import co.neweden.menugui.MenuGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
-public class MenuInstance {
+public class MenuInstance implements Listener {
 
     private Menu menu;
     protected HashMap<Integer, InventorySlot> slots = new HashMap<>();
@@ -21,6 +25,7 @@ public class MenuInstance {
     public MenuInstance(Menu menu, Inventory inv) {
         this.menu = menu;
         this.inv = inv;
+        Bukkit.getPluginManager().registerEvents(this, MenuGUI.getPlugin());
     }
 
     public Menu getMenu() { return menu; }
@@ -58,6 +63,12 @@ public class MenuInstance {
         for (HumanEntity human : getViewers()) {
             human.closeInventory();
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getInventory().equals(inv) && event.getView().getBottomInventory().equals(event.getClickedInventory()))
+            event.setCancelled(true);
     }
 
 }
