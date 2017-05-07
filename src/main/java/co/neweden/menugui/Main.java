@@ -11,21 +11,20 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         MenuGUI.plugin = this;
-        if (!startup()) getServer().getPluginManager().disablePlugin(this);
+        startup();
         getCommand("menugui").setExecutor(new Commands(this));
     }
 
-    private boolean startup() {
+    private void startup() {
         saveDefaultConfig();
         MenuGUI.apiOnlyMode = getConfig().getBoolean("apiOnlyMode", false);
         if (!MenuGUI.isAPIOnlyMode()) {
-            if (!loadDBConnection()) return false;
-            if (!setupDB()) return false;
+            if (!loadDBConnection()) return;
+            if (!setupDB()) return;
             Loader loader = new Loader();
-            if (!loader.loadDBMenus()) return false;
+            if (!loader.loadDBMenus()) return;
         } else
             getLogger().log(Level.INFO, "Based on the config option apiOnlyMode the plugin will run in API only mode.");
-        return true;
     }
 
     public boolean reload() {
@@ -37,13 +36,15 @@ public class Main extends JavaPlugin {
         if (!MenuGUI.menus.isEmpty()) return false;
 
         try {
-            MenuGUI.db.close();
+            if (!MenuGUI.isAPIOnlyMode())
+                MenuGUI.db.close();
         } catch (SQLException e) {
             getLogger().log(Level.SEVERE, "Unable to close database connection", e);
             return false;
         }
 
-        return startup();
+        startup();
+        return true;
     }
 
     private boolean loadDBConnection() {
@@ -52,6 +53,7 @@ public class Main extends JavaPlugin {
         String database = getConfig().getString("mysql.database", null);
         if (host == null || port == null || database == null) {
             getLogger().log(Level.INFO, "No database information received from config, the plugin will run in API only mode.");
+            MenuGUI.apiOnlyMode = true;
             return false;
         }
 
@@ -61,6 +63,7 @@ public class Main extends JavaPlugin {
             MenuGUI.db = DriverManager.getConnection(url, getConfig().getString("mysql.user", ""), getConfig().getString("mysql.password", ""));
         } catch (SQLException e) {
             getLogger().log(Level.SEVERE, "An SQLException occurred while trying to connect to the database, the plugin will run in API only mode.", e);
+            MenuGUI.apiOnlyMode = true;
             return false;
         }
         getLogger().log(Level.INFO, "Connected to MySQL Database");
