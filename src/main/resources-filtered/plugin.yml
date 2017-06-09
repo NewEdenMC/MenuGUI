@@ -1,7 +1,7 @@
-name: MenuGUI
+name: ${artifactId}
+version: ${version}
 description: Provides graphical menu systems using inventories
 main: co.neweden.menugui.Main
-version: 2.0-SNAPSHOT
 author: AaronMcH
 website: https://neweden.co/
 commands:
