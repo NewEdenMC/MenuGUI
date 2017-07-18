@@ -7,6 +7,7 @@ public class FrameJSON {
     public Short durability;
     public Boolean enchantEffect;
     public String displayName;
+    public String headTextureHash;
     public String addHoverText;
     public Boolean clearHoverText;
     public String clickCommand;

@@ -111,6 +111,7 @@ public class Commands implements CommandExecutor {
                     "  `durability` int(11) NOT NULL DEFAULT '-1',\n" +
                     "  `hoverText` blob,\n" +
                     "  `enchantEffect` tinyint(1) NOT NULL DEFAULT '0',\n" +
+                    "  `headTextureHash` blob,\n" +
                     "  `animationJSON` blob,\n" +
                     "  `clickCommand` varchar(256) DEFAULT NULL,\n" +
                     "  PRIMARY KEY (`slot`)\n" +

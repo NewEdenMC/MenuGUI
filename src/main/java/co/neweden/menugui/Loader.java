@@ -68,6 +68,11 @@ public class Loader implements Listener {
                 InventorySlot slot = instance.getSlot(rs.getInt("slot"));
                 slot.setMaterial(Material.getMaterial(rs.getString("material")));
                 if (!rs.getString("displayName").isEmpty()) slot.setDisplayName(rs.getString("displayName"));
+                if (rs.getBlob("headTextureHash") != null) {
+                    Blob headTextureHashBlob = rs.getBlob("headTextureHash");
+                    String headTextureHash = new String(headTextureHashBlob.getBytes(1, (int) headTextureHashBlob.length()));
+                    slot.setHeadTextureHash(headTextureHash);
+                }
                 slot.setAmount(rs.getInt("amount"));
                 slot.setDurability(rs.getShort("durability"));
                 slot.enableEnchantEffect(rs.getBoolean("enchantEffect"));

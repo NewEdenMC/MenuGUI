@@ -6,6 +6,8 @@ import co.neweden.menugui.Util;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,9 +21,11 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -77,6 +81,7 @@ public class InventorySlot extends SlotFrame implements Listener {
             if (jsonFrame.durability != null) frame.setDurability(jsonFrame.durability);
             if (jsonFrame.enchantEffect != null) frame.enableEnchantEffect(jsonFrame.enchantEffect);
             if (jsonFrame.displayName != null) frame.setDisplayName(jsonFrame.displayName);
+            if (jsonFrame.headTextureHash != null) frame.setHeadTextureHash(jsonFrame.headTextureHash);
             if (jsonFrame.addHoverText != null) frame.addHoverText(jsonFrame.addHoverText);
             if (jsonFrame.clearHoverText != null) {
                 if (jsonFrame.clearHoverText) frame.clearHoverText();
@@ -102,6 +107,7 @@ public class InventorySlot extends SlotFrame implements Listener {
                 else
                     item.removeEnchantment(Enchantment.LUCK);
             }
+
             ItemMeta meta = item.getItemMeta();
             if (frame.displayName != null) meta.setDisplayName(Util.formatString("&r" + frame.displayName));
             if (frame.hoverText.size() > 0) {
@@ -116,12 +122,32 @@ public class InventorySlot extends SlotFrame implements Listener {
                 }
                 meta.setLore(lore);
             }
+            meta = addCustomHeadMeta(meta, frame.headTextureHash);
             if (meta != null) meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             item.setItemMeta(meta);
             menu.inv.setItem(slot, item);
         } catch (Throwable e) {
             menu.getMenu().getLogger().log(Level.SEVERE, String.format("Exception occurred while updating slot %s at frame %s.", slot, tick), e);
         }
+    }
+
+    private ItemMeta addCustomHeadMeta(ItemMeta meta, String hash) {
+        String data = "enter base64 here";
+        if (!(meta instanceof SkullMeta)) return meta;
+
+        SkullMeta skullMeta = (SkullMeta) meta;
+
+        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        profile.getProperties().put("textures", new Property("textures", hash));
+        Field profileField;
+        try {
+            profileField = skullMeta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            profileField.set(skullMeta, profile);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            MenuGUI.getPlugin().getLogger().log(Level.SEVERE, "Menu: " + menu.getMenu().getName() + "; slot: " + slot + "; Tried to access profile field in authlib.GameProfile but an exception was thrown.", e);
+        }
+        return skullMeta;
     }
 
     public void run() {

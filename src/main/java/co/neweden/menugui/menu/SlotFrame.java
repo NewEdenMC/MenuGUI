@@ -24,6 +24,9 @@ public class SlotFrame {
     protected String displayName;
     public SlotFrame setDisplayName(String displayName) { this.displayName = displayName; return this; }
 
+    protected String headTextureHash;
+    public SlotFrame setHeadTextureHash(String headTextureHash) { this.headTextureHash = headTextureHash; return this; }
+
     protected List<String> hoverText = new ArrayList<>();
     public SlotFrame addHoverText(String text) { hoverText.add(text); return this; }
     public SlotFrame addHoverText(List<String> text) { hoverText.addAll(text); return this; }
