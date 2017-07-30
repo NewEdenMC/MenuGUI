@@ -3,6 +3,8 @@ package co.neweden.menugui.menu;
 import co.neweden.menugui.FrameJSON;
 import co.neweden.menugui.MenuGUI;
 import co.neweden.menugui.Util;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -87,6 +89,7 @@ public class InventorySlot extends SlotFrame implements Listener {
                 if (jsonFrame.clearHoverText) frame.clearHoverText();
             }
             if (jsonFrame.clickCommand != null) frame.setClickCommand(jsonFrame.clickCommand);
+            if (jsonFrame.serverToTeleport != null) frame.setServerToTeleport(jsonFrame.serverToTeleport);
             if (jsonFrame.repeat != null) {
                 if (jsonFrame.repeat) frame.repeat();
             }
@@ -196,13 +199,19 @@ public class InventorySlot extends SlotFrame implements Listener {
             currentSlot.runnable.instance = menu;
             currentSlot.runnable.run();
         }
+        Player player = (Player) event.getWhoClicked();
         if (currentSlot.command != null) {
-            Player player = (Player) event.getWhoClicked();
             if (currentSlot.closeOnClick) {
                 commandQueue.put(player, currentSlot.command);
                 player.closeInventory();
             } else
                 player.performCommand(currentSlot.command);
+        }
+        if (currentSlot.tpServer != null) {
+            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+            out.writeUTF("Connect");
+            out.writeUTF(currentSlot.tpServer);
+            player.sendPluginMessage(MenuGUI.getPlugin(), "BungeeCord", out.toByteArray());
         }
         event.setCancelled(true);
     }

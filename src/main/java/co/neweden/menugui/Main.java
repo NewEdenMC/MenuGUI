@@ -13,6 +13,7 @@ public class Main extends JavaPlugin {
         MenuGUI.plugin = this;
         startup();
         getCommand("menugui").setExecutor(new Commands(this));
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     }
 
     private void startup() {

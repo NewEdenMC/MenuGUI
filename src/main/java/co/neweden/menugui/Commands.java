@@ -114,6 +114,7 @@ public class Commands implements CommandExecutor {
                     "  `headTextureHash` blob,\n" +
                     "  `animationJSON` blob,\n" +
                     "  `clickCommand` varchar(256) DEFAULT NULL,\n" +
+                    "  `serverToTeleport` varchar(256) DEFAULT NULL,\n" +
                     "  PRIMARY KEY (`slot`)\n" +
                     ")"
             );

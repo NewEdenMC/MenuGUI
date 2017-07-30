@@ -79,6 +79,7 @@ public class Loader implements Listener {
                 if (rs.getBlob("hoverText") != null) slot.addHoverText(rs.getBlob("hoverText"));
                 if (rs.getBlob("animationJSON") != null) slot.animationFromJSON(rs.getBlob("animationJSON"));
                 if (rs.getString("clickCommand") != null) slot.setClickCommand(rs.getString("clickCommand"));
+                if (rs.getString("serverToTeleport") != null) slot.setServerToTeleport(rs.getString("serverToTeleport"));
             }
         } catch (SQLException e) {
             instance.getMenu().getLogger().log(Level.SEVERE, "SQLException occurred while trying to populate data for managed menu.", e);
