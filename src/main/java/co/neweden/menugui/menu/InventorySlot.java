@@ -42,6 +42,11 @@ public class InventorySlot extends SlotFrame implements Listener {
     protected BukkitTask task;
     private SlotFrame currentSlot;
 
+    private MenuRunnable cRunnable;
+    private String cCommand;
+    private boolean cCloseOnClick;
+    private String cTpServer;
+
     public InventorySlot(MenuInstance menu, Integer slot) {
         this.menu = menu;
         this.slot = slot;
@@ -129,6 +134,10 @@ public class InventorySlot extends SlotFrame implements Listener {
             if (meta != null) meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             item.setItemMeta(meta);
             menu.inv.setItem(slot, item);
+            if (frame.runnable != null) cRunnable = frame.runnable;
+            if (frame.command != null) cCommand = frame.command;
+            if (frame.closeOnClick != cCloseOnClick) cCloseOnClick = frame.closeOnClick;
+            if (frame.tpServer != null) cTpServer = frame.tpServer;
         } catch (Throwable e) {
             menu.getMenu().getLogger().log(Level.SEVERE, String.format("Exception occurred while updating slot %s at frame %s.", slot, tick), e);
         }
@@ -194,22 +203,22 @@ public class InventorySlot extends SlotFrame implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
         if (!event.getClickedInventory().equals(menu.inv) || event.getSlot() != slot) return;
-        if (currentSlot.runnable != null) {
-            currentSlot.runnable.instance = menu;
-            currentSlot.runnable.run();
+        if (cRunnable != null) {
+            cRunnable.instance = menu;
+            cRunnable.run();
         }
         Player player = (Player) event.getWhoClicked();
-        if (currentSlot.command != null) {
-            if (currentSlot.closeOnClick) {
-                commandQueue.put(player, currentSlot.command);
+        if (cCommand != null) {
+            if (cCloseOnClick) {
+                commandQueue.put(player, cCommand);
                 player.closeInventory();
             } else
-                player.performCommand(currentSlot.command);
+                player.performCommand(cCommand);
         }
-        if (currentSlot.tpServer != null) {
+        if (cTpServer != null) {
             ByteArrayDataOutput out = ByteStreams.newDataOutput();
             out.writeUTF("Connect");
-            out.writeUTF(currentSlot.tpServer);
+            out.writeUTF(cTpServer);
             player.sendPluginMessage(MenuGUI.getPlugin(), "BungeeCord", out.toByteArray());
         }
         event.setCancelled(true);
