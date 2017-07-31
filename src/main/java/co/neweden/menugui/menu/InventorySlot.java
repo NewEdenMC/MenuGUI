@@ -117,10 +117,9 @@ public class InventorySlot extends SlotFrame implements Listener {
                 List<String> lore = new ArrayList<>();
                 if (!frame.clearHover && meta.getLore() != null) lore.addAll(meta.getLore());
                 for (String text : frame.hoverText) {
-                    text = Util.addLineBreaks(text, 40);
-                    String[] split = text.split("\n");
-                    for (int i = 0; i < split.length; i++) {
-                        lore.add(Util.formatString("&r" + split[i]));
+                    text = Util.formatString(text, 38);
+                    for (String part : text.split("\n")) {
+                        lore.add("\u00A7r" + part);
                     }
                 }
                 meta.setLore(lore);

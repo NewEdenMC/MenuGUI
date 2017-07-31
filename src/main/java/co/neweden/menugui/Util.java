@@ -38,36 +38,42 @@ public final class Util {
 		return text;
 	}
 
-	public static String addLineBreaks(String input, int maxLineLength) {
-		String[] parts = input.split(" ");
-		int lineLen = 0;
-		for (int i = 0; i < parts.length; i++) {
-			//if (i == parts.length - 1) continue; // if last word, skip it as nothing after to break
-			if (i > 0) lineLen++; // Account for the missing space in the line character count
+	public static String formatString(String text, int maxLineLength) {
+		char[] input = text.toCharArray();
+		StringBuilder output = new StringBuilder();
+		int wordStartAt = 0;
+		String lastColourCode = "";
+		int currLineLength = 1;
 
-			int newLength = lineLen + parts[i].length();
-			if (newLength < maxLineLength) { // If line + word length doesn't exceed max line length keep going
-				lineLen = newLength;
+		for (int i = 0; i < input.length; i++) { // 7
+			// convert colour codes
+			if (i < input.length - 1 && input[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(input[i + 1]) >= 0) {
+				if (i >= 2 && input[i - 2] == '\u00A7')
+					lastColourCode = "\u00A7" + input[i - 1] + "\u00A7" + input[i + 1];
+				else
+					lastColourCode = "\u00A7" + input[i + 1];
+				output.append('\u00A7').append(input[i + 1]);
+				i++;
 				continue;
 			}
 
-			// We now know we need to break the line
-			if (lineLen > 0)
-				parts[i - 1] += "\n"; // Add linebreak before word so this word will start the next line
-			else if (lineLen == 0 && parts.length > 1)
-				parts[i] += "\n"; // Add linebreak after word if it's only word on line and the paragraph has more than one word (to avoid a random linebreak after word)
+			if (input[i] == ' ' || input[i] == '\n' || input[i] == '\r')
+				wordStartAt = output.length(); // will be index after space
+			if (input[i] == '\n' || input[i] == '\r')
+				currLineLength = 0;
 
-			lineLen = 0;
+			if (currLineLength > maxLineLength) {
+				output.insert(wordStartAt, "\n" + lastColourCode);
+				output.append(input[i]);
+				currLineLength = output.length() - 1 - wordStartAt;
+				continue;
+			}
+
+			currLineLength++;
+			output.append(input[i]);
 		}
-		String out = "";
-		String formatting = "";
-		for (String line : String.join(" ", parts).split("\n")) {
-			out += formatting + line + "\n";
-			Matcher matcher = Pattern.compile("(\u00A7|&)[0-9a-fk-o]").matcher(line);
-			if (matcher.find())
-				formatting = matcher.group();
-		}
-		return out;
+
+		return output.toString();
 	}
-	
+
 }
