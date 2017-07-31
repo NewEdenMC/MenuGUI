@@ -47,7 +47,7 @@ public final class Util {
 
 		for (int i = 0; i < input.length; i++) { // 7
 			// convert colour codes
-			if (i < input.length - 1 && input[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(input[i + 1]) >= 0) {
+			if (i < input.length - 1 && (input[i] == '&' || input[i] == '\u00A7') && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(input[i + 1]) >= 0) {
 				if (i >= 2 && input[i - 2] == '\u00A7')
 					lastColourCode = "\u00A7" + input[i - 1] + "\u00A7" + input[i + 1];
 				else
