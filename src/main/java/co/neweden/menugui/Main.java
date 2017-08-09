@@ -58,7 +58,7 @@ public class Main extends JavaPlugin {
             return false;
         }
 
-        String url = String.format("jdbc:mysql://%s:%s/%s", host, port, database);
+        String url = String.format("jdbc:mysql://%s:%s/%s?autoReconnect=true", host, port, database);
 
         try {
             MenuGUI.db = DriverManager.getConnection(url, getConfig().getString("mysql.user", ""), getConfig().getString("mysql.password", ""));
